@@ -512,24 +512,23 @@ summary {
 <span id="cb3-3"><a href="#cb3-3"></a></span>
 <span id="cb3-4"><a href="#cb3-4"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;UrbanInstitute/urbnmapr&quot;</span>)</span></code></pre></div>
 <p>We now have access to a dataset of county level data:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">options</span>(<span class="dt">width =</span> <span class="dv">90</span>)</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(urbnmapr)</span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">library</span>(urbnmapr)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>county &lt;-<span class="st"> </span>urbnmapr<span class="op">::</span>counties</span>
 <span id="cb4-4"><a href="#cb4-4"></a></span>
-<span id="cb4-5"><a href="#cb4-5"></a>county &lt;-<span class="st"> </span>urbnmapr<span class="op">::</span>counties</span>
-<span id="cb4-6"><a href="#cb4-6"></a></span>
-<span id="cb4-7"><a href="#cb4-7"></a>county <span class="op">%&gt;%</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="st">  </span><span class="kw">head</span>()</span></code></pre></div>
+<span id="cb4-5"><a href="#cb4-5"></a>county <span class="op">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">  </span><span class="kw">head</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 12
-##    long   lat order hole  piece group   county_fips state_abbv state_fips county_name   
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt; &lt;fct&gt; &lt;fct&gt;   &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;         
-## 1 -86.9  32.7     1 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 2 -86.8  32.7     2 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 3 -86.7  32.7     3 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 4 -86.7  32.7     4 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 5 -86.4  32.7     5 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 6 -86.4  32.4     6 FALSE 1     01001.1 01001       AL         01         Autauga County
-## # … with 2 more variables: fips_class &lt;chr&gt;, state_name &lt;chr&gt;</code></pre>
+##    long   lat order hole  piece group   county_fips state_abbv state_fips
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt; &lt;fct&gt; &lt;fct&gt;   &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     
+## 1 -86.9  32.7     1 FALSE 1     01001.1 01001       AL         01        
+## 2 -86.8  32.7     2 FALSE 1     01001.1 01001       AL         01        
+## 3 -86.7  32.7     3 FALSE 1     01001.1 01001       AL         01        
+## 4 -86.7  32.7     4 FALSE 1     01001.1 01001       AL         01        
+## 5 -86.4  32.7     5 FALSE 1     01001.1 01001       AL         01        
+## 6 -86.4  32.4     6 FALSE 1     01001.1 01001       AL         01        
+## # … with 3 more variables: county_name &lt;chr&gt;, fips_class &lt;chr&gt;,
+## #   state_name &lt;chr&gt;</code></pre>
 <p>Here is where our merging problem comes up- we need to add the <code>BROADBAND AVAILABILITY PER FCC</code> and <code>BROADBAND USAGE</code> variables to the <code>county</code> dataset. There are a few different ways that this merge can be made- <code>full_join</code>, <code>left_join</code>, <code>right_join</code>, and <code>anti_join</code>. The word infront of “join” refers to the dataset which keeps all of its values. <code>full_join</code> keeps all of the values from each dataset, filling in <code>NA</code> for values that don’t appear in the other dataset. <code>left_join</code> and <code>right_join</code> keep all values from the dataset on the left and right, respectively, and <code>anti_join</code> gives all of the values that weren’t matched in the merge. The syntax works as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>left_dataset <span class="op">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">full_join</span>(right_dataset, <span class="dt">by =</span> column_in_common)</span></code></pre></div>
@@ -538,15 +537,16 @@ summary {
 <span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">left_join</span>(broadband, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;county_name&quot;</span> =<span class="st"> &quot;COUNTY NAME&quot;</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">head</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 16
-##    long   lat order hole  piece group   county_fips state_abbv state_fips county_name   
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt; &lt;fct&gt; &lt;fct&gt;   &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;         
-## 1 -86.9  32.7     1 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 2 -86.8  32.7     2 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 3 -86.7  32.7     3 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 4 -86.7  32.7     4 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 5 -86.4  32.7     5 FALSE 1     01001.1 01001       AL         01         Autauga County
-## 6 -86.4  32.4     6 FALSE 1     01001.1 01001       AL         01         Autauga County
-## # … with 6 more variables: fips_class &lt;chr&gt;, state_name &lt;chr&gt;, ST &lt;chr&gt;, COUNTY ID &lt;dbl&gt;,
+##    long   lat order hole  piece group   county_fips state_abbv state_fips
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;lgl&gt; &lt;fct&gt; &lt;fct&gt;   &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     
+## 1 -86.9  32.7     1 FALSE 1     01001.1 01001       AL         01        
+## 2 -86.8  32.7     2 FALSE 1     01001.1 01001       AL         01        
+## 3 -86.7  32.7     3 FALSE 1     01001.1 01001       AL         01        
+## 4 -86.7  32.7     4 FALSE 1     01001.1 01001       AL         01        
+## 5 -86.4  32.7     5 FALSE 1     01001.1 01001       AL         01        
+## 6 -86.4  32.4     6 FALSE 1     01001.1 01001       AL         01        
+## # … with 7 more variables: county_name &lt;chr&gt;, fips_class &lt;chr&gt;,
+## #   state_name &lt;chr&gt;, ST &lt;chr&gt;, COUNTY ID &lt;dbl&gt;,
 ## #   BROADBAND AVAILABILITY PER FCC &lt;chr&gt;, BROADBAND USAGE &lt;chr&gt;</code></pre>
 <p>Great! It looks like the two columns from the <code>broadband</code> dataset have been added. Before we keep going, I want to give you a pro tip- <strong>always check whether values have been excluded because of name mismatches</strong>. Did that happen here? Let’s use the <code>anti_join</code> function to check. I am using the <code>select()</code> function to restrict the output the county names and state abbreviations, and then the <code>distinct()</code> function to take out duplicates.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>county <span class="op">%&gt;%</span></span>
@@ -564,23 +564,28 @@ summary {
 <span id="cb11-3"><a href="#cb11-3"></a><span class="st">  </span><span class="kw">select</span>(<span class="st">`</span><span class="dt">COUNTY NAME</span><span class="st">`</span>) <span class="op">%&gt;%</span></span>
 <span id="cb11-4"><a href="#cb11-4"></a><span class="st">  </span><span class="kw">pull</span>() <span class="op">%&gt;%</span></span>
 <span id="cb11-5"><a href="#cb11-5"></a><span class="st">  </span><span class="kw">unique</span>()</span></code></pre></div>
-<pre><code>##  [1] &quot;Aurora County&quot;      &quot;Beadle County&quot;      &quot;Bennett County&quot;     &quot;Bon Homme County&quot;  
-##  [5] &quot;Brookings County&quot;   &quot;Brown County&quot;       &quot;Brule County&quot;       &quot;Buffalo County&quot;    
-##  [9] &quot;Butte County&quot;       &quot;Campbell County&quot;    &quot;Charles Mix County&quot; &quot;Clark County&quot;      
-## [13] &quot;Clay County&quot;        &quot;Codington County&quot;   &quot;Corson County&quot;      &quot;Custer County&quot;     
-## [17] &quot;Davison County&quot;     &quot;Day County&quot;         &quot;Deuel County&quot;       &quot;Dewey County&quot;      
-## [21] &quot;Douglas County&quot;     &quot;Edmunds County&quot;     &quot;Fall River County&quot;  &quot;Faulk County&quot;      
-## [25] &quot;Grant County&quot;       &quot;Gregory County&quot;     &quot;Haakon County&quot;      &quot;Hamlin County&quot;     
-## [29] &quot;Hand County&quot;        &quot;Hanson County&quot;      &quot;Harding County&quot;     &quot;Hughes County&quot;     
-## [33] &quot;Hutchinson County&quot;  &quot;Hyde County&quot;        &quot;Jackson County&quot;     &quot;Jerauld County&quot;    
-## [37] &quot;Jones County&quot;       &quot;Kingsbury County&quot;   &quot;Lake County&quot;        &quot;Lawrence County&quot;   
-## [41] &quot;Lincoln County&quot;     &quot;Lyman County&quot;       &quot;McCook County&quot;      &quot;McPherson County&quot;  
-## [45] &quot;Marshall County&quot;    &quot;Meade County&quot;       &quot;Mellette County&quot;    &quot;Miner County&quot;      
-## [49] &quot;Minnehaha County&quot;   &quot;Moody County&quot;       &quot;Pennington County&quot;  &quot;Perkins County&quot;    
-## [53] &quot;Potter County&quot;      &quot;Roberts County&quot;     &quot;Sanborn County&quot;     &quot;Oglala County&quot;     
-## [57] &quot;Spink County&quot;       &quot;Stanley County&quot;     &quot;Sully County&quot;       &quot;Todd County&quot;       
-## [61] &quot;Tripp County&quot;       &quot;Turner County&quot;      &quot;Union County&quot;       &quot;Walworth County&quot;   
-## [65] &quot;Yankton County&quot;     &quot;Ziebach County&quot;</code></pre>
+<pre><code>##  [1] &quot;Aurora County&quot;      &quot;Beadle County&quot;      &quot;Bennett County&quot;    
+##  [4] &quot;Bon Homme County&quot;   &quot;Brookings County&quot;   &quot;Brown County&quot;      
+##  [7] &quot;Brule County&quot;       &quot;Buffalo County&quot;     &quot;Butte County&quot;      
+## [10] &quot;Campbell County&quot;    &quot;Charles Mix County&quot; &quot;Clark County&quot;      
+## [13] &quot;Clay County&quot;        &quot;Codington County&quot;   &quot;Corson County&quot;     
+## [16] &quot;Custer County&quot;      &quot;Davison County&quot;     &quot;Day County&quot;        
+## [19] &quot;Deuel County&quot;       &quot;Dewey County&quot;       &quot;Douglas County&quot;    
+## [22] &quot;Edmunds County&quot;     &quot;Fall River County&quot;  &quot;Faulk County&quot;      
+## [25] &quot;Grant County&quot;       &quot;Gregory County&quot;     &quot;Haakon County&quot;     
+## [28] &quot;Hamlin County&quot;      &quot;Hand County&quot;        &quot;Hanson County&quot;     
+## [31] &quot;Harding County&quot;     &quot;Hughes County&quot;      &quot;Hutchinson County&quot; 
+## [34] &quot;Hyde County&quot;        &quot;Jackson County&quot;     &quot;Jerauld County&quot;    
+## [37] &quot;Jones County&quot;       &quot;Kingsbury County&quot;   &quot;Lake County&quot;       
+## [40] &quot;Lawrence County&quot;    &quot;Lincoln County&quot;     &quot;Lyman County&quot;      
+## [43] &quot;McCook County&quot;      &quot;McPherson County&quot;   &quot;Marshall County&quot;   
+## [46] &quot;Meade County&quot;       &quot;Mellette County&quot;    &quot;Miner County&quot;      
+## [49] &quot;Minnehaha County&quot;   &quot;Moody County&quot;       &quot;Pennington County&quot; 
+## [52] &quot;Perkins County&quot;     &quot;Potter County&quot;      &quot;Roberts County&quot;    
+## [55] &quot;Sanborn County&quot;     &quot;Oglala County&quot;      &quot;Spink County&quot;      
+## [58] &quot;Stanley County&quot;     &quot;Sully County&quot;       &quot;Todd County&quot;       
+## [61] &quot;Tripp County&quot;       &quot;Turner County&quot;      &quot;Union County&quot;      
+## [64] &quot;Walworth County&quot;    &quot;Yankton County&quot;     &quot;Ziebach County&quot;</code></pre>
 <p>Okay- it looks like <code>Oglala Lakota County</code> is named <code>Oglala County</code> in the <code>broadband</code> dataset.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>broadband <span class="op">%&gt;%</span></span>
 <span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw">filter</span>(ST <span class="op">==</span><span class="st"> &quot;LA&quot;</span>) <span class="op">%&gt;%</span></span>
